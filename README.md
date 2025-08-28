@@ -2,7 +2,7 @@
 
 ### what is this? (v0.1)
 
-user will describe/give prompt for any topic they want to learn about and select option from how they want response from option like podcast, youtuber type, tutorial, etc. and will submit the request. and will get response in audio format, that user can listen to or download the audio file.
+EchoGen lets you learn about anything in a way that feels natural to you. Just type in a topic, pick how you want it explained—like a podcast, YouTuber, or step-by-step tutorial—and EchoGen will turn it into an audio you can listen to or download.
 
 ### TODO (v0.1)
 

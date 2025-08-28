@@ -1,0 +1,12 @@
+{
+  "name": "echogen",
+  "private": true,
+  "scripts": {
+    "start": "concurrently \"npm:backend\" \"npm:frontend\"",
+    "frontend": "cd frontend && npm run dev",
+    "backend": "cd backend && go run ."
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

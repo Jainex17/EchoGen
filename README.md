@@ -13,6 +13,6 @@ user will describe/give prompt for any topic they want to learn about and select
 
 - [ ] backend
     - [ ] receive request from frontend
-    - [ ] generate text content from prompt (use gemini api/openrouter)
-    - [ ] generate audio file from text content (elevenlabs api)
+    - [x] generate text content from prompt (use gemini api/openrouter)
+    - [x] generate audio file from text content (elevenlabs api)
     - [ ] send audio file to frontend

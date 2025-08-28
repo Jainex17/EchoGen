@@ -9,14 +9,14 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/google/uuid"
 	"github.com/joho/godotenv"
 )
 
 type ttsRequest struct {
-	Prompt       string `json:"prompt"`
-	VoiceId      string `json:"voice_id"`
-	ModelId      string `json:"model_id"`
-	OutputFormat string `json:"output_format"`
+	Prompt  string `json:"prompt"`
+	VoiceId string `json:"voice_id"`
+	ModelId string `json:"model_id"`
 }
 
 type GeminiResponse struct {
@@ -29,23 +29,38 @@ type GeminiResponse struct {
 	} `json:"candidates"`
 }
 
-var SystemPrompt = `You are a podcast narrator. The user will provide a topic, and you must create a podcast-style script about it.
-Rules:
-- Write only the podcast content — do not include meta-text like “I understand” or “Heres your explanation.”
-- Use a natural, engaging, conversational tone as if youre speaking to an audience.
-- If the user provides a podcast/host name, use it naturally in the introduction.
-- Example: “Welcome to TechTalk with Sarah…”
-- If no name is provided, make up a short, catchy podcast name and use it.
-- Structure should include:
-- Intro hook (grab attention).
-- Main explanation (clear, flowing, engaging).
-- Closing note (wrap up neatly).
-- Avoid robotic or overly formal wording — keep it human and story-like.`
+var SystemPrompt = `You are a podcast narrator. The user will provide a topic, and you must create a podcast-style script about it.  
+
+Rules:  
+- Keep the script concise: about 30–60 seconds of spoken audio (roughly 120–150 words).  
+- Write only the podcast content — do not include meta-text like “I understand” or “Here’s your explanation.”  
+- Use a natural, engaging, conversational tone as if youre speaking to an audience.  
+- If the user provides a podcast/host name, use it naturally in the introduction.  
+- If no name is provided, make up a short, catchy podcast name and use it.  
+- Structure:  
+  - Intro hook (grab attention).  
+  - Main explanation (clear, flowing, engaging).  
+  - Closing note (wrap up neatly).  
+- Avoid robotic or overly formal wording — keep it human and story-like.  
+`
 
 var apiKey string
 var geminiAPIKey string
 
+func enableCors(w http.ResponseWriter) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+}
+
 func tts(w http.ResponseWriter, r *http.Request) {
+	enableCors(w)
+
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -58,15 +73,19 @@ func tts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.VoiceId == "" || req.ModelId == "" || req.Prompt == "" {
-		fmt.Println("voice_id: ", req.VoiceId)
-		fmt.Println("model_id: ", req.ModelId)
-		http.Error(w, "Missing required fields", http.StatusBadRequest)
+	if req.Prompt == "" {
+		http.Error(w, "Missing prompt", http.StatusBadRequest)
 		return
 	}
-	if req.OutputFormat == "" {
-		req.OutputFormat = "mp3_44100_128"
+
+	if req.VoiceId == "" {
+		req.VoiceId = "3gsg3cxXyFLcGIfNbM6C"
 	}
+	if req.ModelId == "" {
+		req.ModelId = "eleven_v3"
+	}
+
+	OutputFormat := "mp3_44100_128"
 
 	// prompt to content
 	payload := map[string]interface{}{
@@ -119,7 +138,7 @@ func tts(w http.ResponseWriter, r *http.Request) {
 		"text":     finalContent,
 		"model_id": req.ModelId,
 	})
-	elevenURL := "https://api.elevenlabs.io/v1/text-to-speech/" + req.VoiceId + "?output_format=" + req.OutputFormat
+	elevenURL := "https://api.elevenlabs.io/v1/text-to-speech/" + req.VoiceId + "?output_format=" + OutputFormat
 	reqEleven, _ := http.NewRequest(http.MethodPost, elevenURL, bytes.NewReader(body))
 	reqEleven.Header.Set("xi-api-key", apiKey)
 	reqEleven.Header.Set("Content-Type", "application/json")
@@ -138,7 +157,7 @@ func tts(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// store audio to file
-	audio, err := os.Create("audio.mp3")
+	audio, err := os.Create("audio.mp3_" + uuid.New().String())
 	if err != nil {
 		http.Error(w, "error creating audio file: "+err.Error(), http.StatusInternalServerError)
 		return

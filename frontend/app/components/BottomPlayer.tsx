@@ -12,30 +12,33 @@ function formatTime(sec: number) {
 export default function BottomPlayer() {
   const { audioSrc, title, isPlaying, duration, currentTime, play, pause, seek } = useAudio();
   const hasTrack = Boolean(audioSrc);
+  
+  if (!hasTrack) return null;
+  
   return (
-    <div className="fixed inset-x-0 bottom-4 z-40 flex justify-center pointer-events-none">
-      <div className="pointer-events-auto w-full max-w-2xl mx-4 rounded-lg border border-black/10 dark:border-white/15 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 shadow-sm">
-        <div className="px-4 py-3 flex items-center gap-4">
+    <div className="fixed inset-x-0 bottom-6 z-40 flex justify-center pointer-events-none">
+      <div className="pointer-events-auto w-full max-w-3xl mx-6 rounded-2xl border border-slate-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/90 shadow-2xl shadow-slate-900/10">
+        <div className="px-6 py-4 flex items-center gap-6">
           <button
             type="button"
-            className="h-10 w-10 inline-flex items-center justify-center rounded-full border border-black/10 dark:border-white/15 disabled:opacity-50"
+            className="h-12 w-12 inline-flex items-center justify-center rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
             onClick={isPlaying ? pause : play}
             disabled={!hasTrack}
             aria-label={isPlaying ? "Pause" : "Play"}
           >
             {isPlaying ? (
               <svg
-                className="w-4 h-4"
+                className="w-5 h-5"
                 viewBox="0 0 24 24"
                 fill="currentColor"
                 aria-hidden="true"
               >
-                <rect x="6" y="5" width="4" height="14" rx="1" />
-                <rect x="14" y="5" width="4" height="14" rx="1" />
+                <rect x="6" y="4" width="4" height="16" rx="2" />
+                <rect x="14" y="4" width="4" height="16" rx="2" />
               </svg>
             ) : (
               <svg
-                className="w-4 h-4"
+                className="w-5 h-5 ml-1"
                 viewBox="0 0 24 24"
                 fill="currentColor"
                 aria-hidden="true"
@@ -46,36 +49,41 @@ export default function BottomPlayer() {
           </button>
 
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium">
-              {title ?? (hasTrack ? "Playing audio" : "No track")}
+            <p className="truncate text-base font-semibold text-slate-900 mb-2">
+              {title ?? "Playing audio"}
             </p>
-            <div className="mt-1 flex items-center gap-3">
-              <span className="text-xs tabular-nums text-black/60 dark:text-white/60">{formatTime(currentTime)}</span>
-              <input
-                type="range"
-                min={0}
-                max={duration || 0}
-                step={0.01}
-                value={Number.isFinite(duration) ? Math.min(currentTime, duration) : 0}
-                onChange={(e) => seek(parseFloat((e.target as HTMLInputElement).value))}
-                className="flex-1 accent-foreground"
-                disabled={!hasTrack}
-                aria-label="Seek"
-              />
-              <span className="text-xs tabular-nums text-black/60 dark:text-white/60">{formatTime(duration)}</span>
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-mono text-slate-600 min-w-[40px]">{formatTime(currentTime)}</span>
+              <div className="flex-1 relative">
+                <input
+                  type="range"
+                  min={0}
+                  max={duration || 0}
+                  step={0.01}
+                  value={Number.isFinite(duration) ? Math.min(currentTime, duration) : 0}
+                  onChange={(e) => seek(parseFloat((e.target as HTMLInputElement).value))}
+                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer slider"
+                  disabled={!hasTrack}
+                  aria-label="Seek"
+                  style={{
+                    background: `linear-gradient(to right, rgb(99 102 241) 0%, rgb(99 102 241) ${duration ? (currentTime / duration) * 100 : 0}%, rgb(226 232 240) ${duration ? (currentTime / duration) * 100 : 0}%, rgb(226 232 240) 100%)`
+                  }}
+                />
+              </div>
+              <span className="text-sm font-mono text-slate-600 min-w-[40px]">{formatTime(duration)}</span>
             </div>
           </div>
 
-         
           <a
             href={audioSrc ?? undefined}
             download
-            className="inline-flex items-center justify-center rounded-md border border-black/10 dark:border-white/15 p-2 disabled:opacity-50"
+            className="inline-flex items-center justify-center rounded-xl border-2 border-slate-300 p-3 hover:bg-indigo-50 hover:border-indigo-400 transition-all duration-200 disabled:opacity-50"
             aria-disabled={!hasTrack}
-            aria-label="Download"
+            aria-label="Download audio file"
+            title="Download"
           >
             <svg
-              className="w-4 h-4"
+              className="w-5 h-5 text-slate-600"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"

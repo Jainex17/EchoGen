@@ -3,13 +3,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { useAuth } from "./AuthContext";
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [style, setStyle] = useState("podcast");
   const [isLoading, setIsLoading] = useState(false);
-  const { user, login, logout, isLoading: isAuthLoading } = useAuth();
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -22,51 +20,34 @@ export default function Home() {
       <main className="mx-auto max-w-6xl px-6 py-16 sm:py-24">
         <section className="grid gap-10 sm:grid-cols-1 sm:gap-16 items-center">
           <div>
-            <h1 className="text-3xl sm:text-5xl font-semibold tracking-tight">
-              Learn anything through clear, focused audio
-            </h1>
-            <p className="mt-4 text-base sm:text-lg text-black/70 dark:text-white/70">
-              Turn your prompt into a concise podcast, a YouTuber-style explanation, or a step-by-step tutorial.
-            </p>
-            <div className="mt-8 flex items-center gap-3">
+            <div className="text-center">
+              <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-indigo-600">
+                EchoGen
+              </h1>
+              <p className="mt-2 text-lg sm:text-xl text-slate-600 font-medium">
+                Learn anything through audio
+              </p>
+              <p className="mt-4 text-base sm:text-lg text-slate-700 max-w-2xl mx-auto">
+                Transform any topic into engaging audio content. Choose from podcast-style discussions, tutorial walkthroughs, or casual explanations tailored to your learning style.
+              </p>
+            </div>
+            <div className="mt-8 flex justify-center">
               <Link
                 href="/audio-gen"
-                className="inline-flex items-center justify-center rounded-md bg-foreground px-5 py-2.5 text-sm font-medium text-background hover:opacity-90 transition"
+                className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-8 py-3 text-base font-semibold text-white hover:bg-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                Create audio
+                🎧 Create Audio Content
               </Link>
-              {
-                isAuthLoading ? (
-                  <p className="text-sm text-black/70 dark:text-white/70">
-                    Loading...
-                  </p>
-                ) : user ? (
-                  <>
-                  <p className="text-sm text-black/70 dark:text-white/70">
-                    Logged in as {user.name}
-                  </p>
-                  <button
-                    onClick={logout}
-                    className="inline-flex items-center justify-center rounded-md bg-foreground px-5 py-2.5 text-sm font-medium text-background hover:opacity-90 transition"
-                  >
-                    Logout
-                  </button>
-                  </>
-                ) : (
-                  <button
-                    onClick={login}
-                    className="inline-flex items-center justify-center rounded-md bg-foreground px-5 py-2.5 text-sm font-medium text-background hover:opacity-90 transition"
-                  >
-                    Login
-                  </button>
-                )}
             </div>
             </div>
         </section>
 
-        <section id="features" className="mt-20 sm:mt-12">
-          <h2 className="text-xl sm:text-2xl font-semibold">Built for focused learning</h2>
-          <div className="mt-6 grid gap-4 sm:gap-6 sm:grid-cols-3">
+        <section id="features" className="mt-20 sm:mt-16">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">Built for focused learning</h2>
+            <p className="mt-3 text-lg text-slate-600">Choose the perfect format for your learning style</p>
+          </div>
+          <div className="mt-8 grid gap-6 sm:gap-8 md:grid-cols-3">
             <FeatureCard
               icon="/file.svg"
               title="Podcast mode"
@@ -99,14 +80,14 @@ function FeatureCard({
   desc: string;
 }) {
   return (
-    <div className="rounded-lg border border-black/10 dark:border-white/15 p-5">
-      <div className="flex items-center gap-3">
-        <span className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-black/10 dark:border-white/15">
-          <Image src={icon} alt="" width={16} height={16} />
-        </span>
-        <p className="font-medium">{title}</p>
+    <div className="group rounded-xl border border-slate-200 p-6 hover:border-indigo-300 transition-all duration-200 hover:shadow-lg hover:shadow-indigo-100 bg-white/80 backdrop-blur">
+      <div className="text-center">
+        <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 group-hover:bg-indigo-200 transition-all duration-200">
+          <Image src={icon} alt="" width={20} height={20} className="opacity-80" />
+        </div>
+        <h3 className="mt-4 font-semibold text-lg text-slate-900">{title}</h3>
+        <p className="mt-2 text-sm text-slate-600 leading-relaxed">{desc}</p>
       </div>
-      <p className="mt-3 text-sm text-black/70 dark:text-white/70">{desc}</p>
     </div>
   );
 }

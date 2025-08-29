@@ -3,17 +3,20 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import { useAuth } from "./AuthContext";
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [style, setStyle] = useState("podcast");
   const [isLoading, setIsLoading] = useState(false);
+  const { user, login, logout, isLoading: isAuthLoading } = useAuth();
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsLoading(true);
     setTimeout(() => setIsLoading(false), 1200);
   }
+
   return (
     <div className="font-sans">
       <main className="mx-auto max-w-6xl px-6 py-16 sm:py-24">
@@ -32,6 +35,31 @@ export default function Home() {
               >
                 Create audio
               </Link>
+              {
+                isAuthLoading ? (
+                  <p className="text-sm text-black/70 dark:text-white/70">
+                    Loading...
+                  </p>
+                ) : user ? (
+                  <>
+                  <p className="text-sm text-black/70 dark:text-white/70">
+                    Logged in as {user.name}
+                  </p>
+                  <button
+                    onClick={logout}
+                    className="inline-flex items-center justify-center rounded-md bg-foreground px-5 py-2.5 text-sm font-medium text-background hover:opacity-90 transition"
+                  >
+                    Logout
+                  </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={login}
+                    className="inline-flex items-center justify-center rounded-md bg-foreground px-5 py-2.5 text-sm font-medium text-background hover:opacity-90 transition"
+                  >
+                    Login
+                  </button>
+                )}
             </div>
             </div>
         </section>

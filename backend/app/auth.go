@@ -5,51 +5,27 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/json"
-	"log"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/joho/godotenv"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 )
 
 var googleOauthConfig *oauth2.Config
-var jwtSecret []byte
-
-var frontendURL = "http://localhost:3000"
-var backendURL = "http://localhost:8080"
-var cookieSecure bool
 
 func init() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
 	googleOauthConfig = &oauth2.Config{
-		RedirectURL:  backendURL + "/auth/google/callback",
-		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
-		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
+		RedirectURL:  BackendURL + "/auth/google/callback",
+		ClientID:     GoogleClientID,
+		ClientSecret: GoogleClientSecret,
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"},
 		Endpoint:     google.Endpoint,
 	}
-
-	frontendURL = os.Getenv("FRONTEND_URL")
-	backendURL = os.Getenv("BACKEND_URL")
-	jwtSecret = []byte(os.Getenv("JWT_SECRET"))
-	if len(jwtSecret) == 0 {
-		log.Fatal("JWT_SECRET environment variable not set")
-	}
-
-	cookieSecure = os.Getenv("COOKIE_SECURE") == "true"
 }
 
 func handleGoogleLogin(w http.ResponseWriter, r *http.Request) {
-	enableCors(w, r)
-
 	b := make([]byte, 16)
 	_, err := rand.Read(b)
 	if err != nil {
@@ -63,7 +39,7 @@ func handleGoogleLogin(w http.ResponseWriter, r *http.Request) {
 		Value:    state,
 		Path:     "/",
 		HttpOnly: true,
-		Secure:   cookieSecure,
+		Secure:   CookieSecure,
 		SameSite: http.SameSiteLaxMode,
 		Expires:  time.Now().Add(10 * time.Minute),
 	})
@@ -73,7 +49,6 @@ func handleGoogleLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
-	enableCors(w, r)
 
 	state := r.URL.Query().Get("state")
 	oauthstate, err := r.Cookie("oauthstate")
@@ -114,7 +89,7 @@ func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 		"exp":     time.Now().Add(24 * time.Hour).Unix(),
 	}
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	signedToken, err := jwtToken.SignedString(jwtSecret)
+	signedToken, err := jwtToken.SignedString(JwtSecret)
 	if err != nil {
 		http.Error(w, "Failed to sign token", http.StatusInternalServerError)
 		return
@@ -126,16 +101,14 @@ func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 		Value:    signedToken,
 		Path:     "/",
 		HttpOnly: true,
-		Secure:   cookieSecure,
+		Secure:   CookieSecure,
 		SameSite: http.SameSiteLaxMode,
 	})
 
-	http.Redirect(w, r, frontendURL, http.StatusTemporaryRedirect)
+	http.Redirect(w, r, FrontendURL, http.StatusTemporaryRedirect)
 }
 
 func handleProfile(w http.ResponseWriter, r *http.Request) {
-	enableCors(w, r)
-
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
 		return
@@ -150,7 +123,7 @@ func handleProfile(w http.ResponseWriter, r *http.Request) {
 
 	// Validate JWT
 	token, err := jwt.Parse(cookie.Value, func(token *jwt.Token) (interface{}, error) {
-		return jwtSecret, nil
+		return JwtSecret, nil
 	})
 	if err != nil || !token.Valid {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
@@ -172,8 +145,6 @@ func handleProfile(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleLogout(w http.ResponseWriter, r *http.Request) {
-	enableCors(w, r)
-
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
 		return
@@ -185,7 +156,7 @@ func handleLogout(w http.ResponseWriter, r *http.Request) {
 		Value:    "",
 		Path:     "/",
 		HttpOnly: true,
-		Secure:   cookieSecure,
+		Secure:   CookieSecure,
 		SameSite: http.SameSiteLaxMode,
 		Expires:  time.Unix(0, 0),
 		MaxAge:   -1,

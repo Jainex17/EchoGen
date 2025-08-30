@@ -47,7 +47,7 @@ func GenContent(req *ttsRequest) (string, error) {
 	}
 
 	geminiURL := "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
-	reqGemini, err := http.NewRequest(http.MethodPost, geminiURL+"?key="+geminiAPIKey, bytes.NewReader(contentBody))
+	reqGemini, err := http.NewRequest(http.MethodPost, geminiURL+"?key="+GeminiAPIKey, bytes.NewReader(contentBody))
 	if err != nil {
 		log.Fatal("error creating request:", err)
 	}

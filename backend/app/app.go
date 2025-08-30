@@ -4,11 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
-	"os"
-
-	"github.com/joho/godotenv"
 )
 
 type ttsRequest struct {
@@ -23,12 +19,9 @@ type GeminiResponse struct {
 			Parts []struct {
 				Text string `json:"text"`
 			} `json:"parts"`
-		} `json:"content"`
-	} `json:"candidates"`
+		}
+	}
 }
-
-var apiKey string
-var geminiAPIKey string
 
 func tts(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -71,20 +64,6 @@ func tts(w http.ResponseWriter, r *http.Request) {
 }
 
 func Run() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	apiKey = os.Getenv("ELEVEN_API_KEY")
-	geminiAPIKey = os.Getenv("GEMINI_API_KEY")
-	if apiKey == "" {
-		log.Fatal("ELEVEN_API_KEY is not set")
-	}
-	if geminiAPIKey == "" {
-		log.Fatal("GEMINI_API_KEY is not set")
-	}
-
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "Hello, World!")
 	})

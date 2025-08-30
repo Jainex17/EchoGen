@@ -30,21 +30,7 @@ type GeminiResponse struct {
 var apiKey string
 var geminiAPIKey string
 
-func enableCors(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-	w.Header().Set("Access-Control-Allow-Credentials", "true")
-
-	if r.Method == http.MethodOptions {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-}
-
 func tts(w http.ResponseWriter, r *http.Request) {
-	enableCors(w, r)
-
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -57,25 +43,12 @@ func tts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.Prompt == "" {
-		http.Error(w, "Missing prompt", http.StatusBadRequest)
-		return
-	}
-
-	if req.VoiceId == "" {
-		req.VoiceId = "3gsg3cxXyFLcGIfNbM6C"
-	}
-	if req.ModelId == "" {
-		req.ModelId = "eleven_v3"
-	}
-
 	// prompt to content
 	finalContent, err := GenContent(&req)
 	if err != nil {
 		http.Error(w, "Failed to generate content: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	fmt.Println("Final Content:\n", finalContent)
 
 	// text to speech
@@ -123,5 +96,5 @@ func Run() {
 	http.HandleFunc("/auth/logout", handleLogout)
 
 	fmt.Println("Starting server on :8080")
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8080", CorsMiddleware(http.DefaultServeMux))
 }

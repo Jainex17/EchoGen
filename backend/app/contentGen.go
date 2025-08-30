@@ -3,6 +3,7 @@ package app
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -24,6 +25,11 @@ Rules:
 `
 
 func GenContent(req *ttsRequest) (string, error) {
+
+	if req.Prompt == "" {
+		return "", fmt.Errorf("missing prompt")
+	}
+
 	payload := map[string]interface{}{
 		"contents": []map[string]interface{}{
 			{

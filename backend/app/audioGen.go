@@ -14,6 +14,13 @@ import (
 func GenAudio(finalContent string, req ttsRequest) (*http.Response, error) {
 	OutputFormat := "mp3_44100_128"
 
+	if req.VoiceId == "" {
+		req.VoiceId = "3gsg3cxXyFLcGIfNbM6C"
+	}
+	if req.ModelId == "" {
+		req.ModelId = "eleven_v3"
+	}
+
 	body, _ := json.Marshal(map[string]any{
 		"text":     finalContent,
 		"model_id": req.ModelId,

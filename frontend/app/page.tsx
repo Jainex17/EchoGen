@@ -22,11 +22,9 @@ export default function Home() {
           <div>
             <div className="text-center">
               <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-indigo-600">
-                EchoGen
+              Learn anything through audio
               </h1>
-              <p className="mt-2 text-lg sm:text-xl text-slate-600 font-medium">
-                Learn anything through audio
-              </p>
+              
               <p className="mt-4 text-base sm:text-lg text-slate-700 max-w-2xl mx-auto">
                 Transform any topic into engaging audio content. Choose from podcast-style discussions, tutorial walkthroughs, or casual explanations tailored to your learning style.
               </p>
@@ -36,7 +34,7 @@ export default function Home() {
                 href="/audio-gen"
                 className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-8 py-3 text-base font-semibold text-white hover:bg-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                🎧 Create Audio Content
+                Create Audio Content
               </Link>
             </div>
             </div>

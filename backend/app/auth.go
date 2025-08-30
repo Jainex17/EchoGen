@@ -15,7 +15,7 @@ import (
 
 var googleOauthConfig *oauth2.Config
 
-func init() {
+func AuthInit() {
 	googleOauthConfig = &oauth2.Config{
 		RedirectURL:  BackendURL + "/auth/google/callback",
 		ClientID:     GoogleClientID,

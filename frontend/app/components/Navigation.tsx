@@ -27,25 +27,10 @@ export default function Navigation() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3">
             <div className="text-2xl font-bold text-indigo-600">
-              🎧 EchoGen
+              EchoGen
             </div>
           </Link>
 
-          {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link 
-              href="/" 
-              className="text-slate-700 hover:text-indigo-600 font-medium transition-colors"
-            >
-              Home
-            </Link>
-            <Link 
-              href="/audio-gen" 
-              className="text-slate-700 hover:text-indigo-600 font-medium transition-colors"
-            >
-              Create Audio
-            </Link>
-          </div>
 
           {/* User Authentication */}
           <div className="flex items-center">
@@ -104,16 +89,6 @@ export default function Navigation() {
                     </div>
                     
                     <div className="py-2">
-                      <Link
-                        href="/audio-gen"
-                        className="flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 transition-colors"
-                        onClick={() => setIsDropdownOpen(false)}
-                      >
-                        <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                        </svg>
-                        Create Audio
-                      </Link>
                       <button
                         onClick={() => {
                           logout();
@@ -132,15 +107,9 @@ export default function Navigation() {
               </div>
             ) : (
               <div className="flex items-center space-x-4">
-                <Link
-                  href="/audio-gen"
-                  className="hidden sm:block text-gray-700 hover:text-emerald-600 font-medium transition-colors"
-                >
-                  Create Audio
-                </Link>
                 <button
                   onClick={login}
-                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+                  className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>

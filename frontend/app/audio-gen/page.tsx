@@ -169,7 +169,7 @@ export default function AudioGenPage() {
             {isLoading && (
               <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-r-transparent" />
             )}
-            <span>{isLoading ? "Generating..." : "🎵 Generate Audio"}</span>
+            <span>{isLoading ? "Generating..." : "Generate Audio"}</span>
           </button>
         </div>
       </form>

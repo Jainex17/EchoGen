@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"echogen/backend/config"
 )
 
 func GenAudio(finalContent string, req ttsRequest) (*http.Response, error) {
@@ -24,7 +26,7 @@ func GenAudio(finalContent string, req ttsRequest) (*http.Response, error) {
 	})
 	elevenURL := "https://api.elevenlabs.io/v1/text-to-speech/" + req.VoiceId + "?output_format=" + OutputFormat
 	reqEleven, _ := http.NewRequest(http.MethodPost, elevenURL, bytes.NewReader(body))
-	reqEleven.Header.Set("xi-api-key", ElevenAPIKey)
+	reqEleven.Header.Set("xi-api-key", config.ElevenAPIKey)
 	reqEleven.Header.Set("Content-Type", "application/json")
 
 	resp, err := http.DefaultClient.Do(reqEleven)

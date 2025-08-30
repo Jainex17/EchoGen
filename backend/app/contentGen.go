@@ -7,6 +7,8 @@ import (
 	"io"
 	"log"
 	"net/http"
+
+	"echogen/backend/config"
 )
 
 var SystemPrompt = `You are a podcast narrator. The user will provide a topic, and you must create a podcast-style script about it.  
@@ -47,7 +49,7 @@ func GenContent(req *ttsRequest) (string, error) {
 	}
 
 	geminiURL := "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
-	reqGemini, err := http.NewRequest(http.MethodPost, geminiURL+"?key="+GeminiAPIKey, bytes.NewReader(contentBody))
+	reqGemini, err := http.NewRequest(http.MethodPost, geminiURL+"?key="+config.GeminiAPIKey, bytes.NewReader(contentBody))
 	if err != nil {
 		log.Fatal("error creating request:", err)
 	}

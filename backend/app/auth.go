@@ -11,15 +11,17 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
+
+	"echogen/backend/config"
 )
 
 var googleOauthConfig *oauth2.Config
 
 func AuthInit() {
 	googleOauthConfig = &oauth2.Config{
-		RedirectURL:  BackendURL + "/auth/google/callback",
-		ClientID:     GoogleClientID,
-		ClientSecret: GoogleClientSecret,
+		RedirectURL:  config.BackendURL + "/auth/google/callback",
+		ClientID:     config.GoogleClientID,
+		ClientSecret: config.GoogleClientSecret,
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"},
 		Endpoint:     google.Endpoint,
 	}
@@ -39,7 +41,7 @@ func handleGoogleLogin(w http.ResponseWriter, r *http.Request) {
 		Value:    state,
 		Path:     "/",
 		HttpOnly: true,
-		Secure:   CookieSecure,
+		Secure:   config.CookieSecure,
 		SameSite: http.SameSiteLaxMode,
 		Expires:  time.Now().Add(10 * time.Minute),
 	})
@@ -89,7 +91,7 @@ func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 		"exp":     time.Now().Add(24 * time.Hour).Unix(),
 	}
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	signedToken, err := jwtToken.SignedString(JwtSecret)
+	signedToken, err := jwtToken.SignedString(config.JwtSecret)
 	if err != nil {
 		http.Error(w, "Failed to sign token", http.StatusInternalServerError)
 		return
@@ -101,11 +103,11 @@ func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 		Value:    signedToken,
 		Path:     "/",
 		HttpOnly: true,
-		Secure:   CookieSecure,
+		Secure:   config.CookieSecure,
 		SameSite: http.SameSiteLaxMode,
 	})
 
-	http.Redirect(w, r, FrontendURL, http.StatusTemporaryRedirect)
+	http.Redirect(w, r, config.FrontendURL, http.StatusTemporaryRedirect)
 }
 
 func handleProfile(w http.ResponseWriter, r *http.Request) {
@@ -140,7 +142,7 @@ func handleLogout(w http.ResponseWriter, r *http.Request) {
 		Value:    "",
 		Path:     "/",
 		HttpOnly: true,
-		Secure:   CookieSecure,
+		Secure:   config.CookieSecure,
 		SameSite: http.SameSiteLaxMode,
 		Expires:  time.Unix(0, 0),
 		MaxAge:   -1,

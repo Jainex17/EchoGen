@@ -1,9 +1,12 @@
 package main
 
-import "echogen/backend/app"
+import (
+	"echogen/backend/app"
+	"echogen/backend/config"
+)
 
 func main() {
-	app.LoadEnv()
+	config.LoadEnv()
 	app.AuthInit()
 	app.Run()
 }

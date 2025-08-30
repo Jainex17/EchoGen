@@ -1,4 +1,4 @@
-package app
+package config
 
 import (
 	"fmt"
@@ -17,6 +17,8 @@ var (
 	BackendURL         string
 	JwtSecret          []byte
 	CookieSecure       bool
+
+	DatabaseURL string
 )
 
 func LoadEnv() {
@@ -58,6 +60,11 @@ func LoadEnv() {
 	JwtSecret = []byte(os.Getenv("JWT_SECRET"))
 	if len(JwtSecret) == 0 {
 		log.Fatal("JWT_SECRET environment variable not set")
+	}
+
+	DatabaseURL = os.Getenv("DB_URL")
+	if DatabaseURL == "" {
+		log.Fatal("DB_URL is not set")
 	}
 
 	CookieSecure = os.Getenv("COOKIE_SECURE") == "true"

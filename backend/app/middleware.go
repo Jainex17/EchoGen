@@ -6,6 +6,8 @@ import (
 	"net/http"
 
 	"github.com/golang-jwt/jwt/v5"
+
+	"echogen/backend/config"
 )
 
 type contextKey string
@@ -40,7 +42,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, fmt.Errorf("unexpected signing method")
 			}
-			return JwtSecret, nil
+			return config.JwtSecret, nil
 		})
 
 		if err != nil || !token.Valid {

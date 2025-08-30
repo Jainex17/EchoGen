@@ -71,7 +71,6 @@ export default function AudioGenPage() {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       setError(errorMessage);
-      console.error("Error generating audio:", errorMessage);
     }
   }
 

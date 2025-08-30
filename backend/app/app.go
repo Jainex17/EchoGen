@@ -68,11 +68,12 @@ func Run() {
 		fmt.Fprintln(w, "Hello, World!")
 	})
 
-	http.HandleFunc("/api/tts", tts)
 	http.HandleFunc("/auth/google/login", handleGoogleLogin)
 	http.HandleFunc("/auth/google/callback", handleGoogleCallback)
-	http.HandleFunc("/auth/me", handleProfile)
-	http.HandleFunc("/auth/logout", handleLogout)
+	http.Handle("/auth/me", AuthMiddleware(http.HandlerFunc(handleProfile)))
+	http.Handle("/auth/logout", AuthMiddleware(http.HandlerFunc(handleLogout)))
+
+	http.Handle("/api/tts", AuthMiddleware(http.HandlerFunc(tts)))
 
 	fmt.Println("Starting server on :8080")
 	http.ListenAndServe(":8080", CorsMiddleware(http.DefaultServeMux))

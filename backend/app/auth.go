@@ -114,23 +114,7 @@ func handleProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Read cookie
-	cookie, err := r.Cookie("session")
-	if err != nil {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		return
-	}
-
-	// Validate JWT
-	token, err := jwt.Parse(cookie.Value, func(token *jwt.Token) (interface{}, error) {
-		return JwtSecret, nil
-	})
-	if err != nil || !token.Valid {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		return
-	}
-
-	claims := token.Claims.(jwt.MapClaims)
+	claims := r.Context().Value(claimsKey).(jwt.MapClaims)
 
 	email := claims["email"].(string)
 	name := claims["name"].(string)

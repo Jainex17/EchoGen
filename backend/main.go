@@ -7,6 +7,7 @@ import (
 
 func main() {
 	config.LoadEnv()
+	config.InitDatabase()
 	app.AuthInit()
 	app.Run()
 }

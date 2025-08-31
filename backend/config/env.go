@@ -62,9 +62,9 @@ func LoadEnv() {
 		log.Fatal("JWT_SECRET environment variable not set")
 	}
 
-	DatabaseURL = os.Getenv("DB_URL")
+	DatabaseURL = os.Getenv("DatabaseURL")
 	if DatabaseURL == "" {
-		log.Fatal("DB_URL is not set")
+		log.Fatal("DatabaseURL is not set")
 	}
 
 	CookieSecure = os.Getenv("COOKIE_SECURE") == "true"

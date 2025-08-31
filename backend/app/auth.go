@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -13,6 +14,7 @@ import (
 	"golang.org/x/oauth2/google"
 
 	"echogen/backend/config"
+	"echogen/backend/model"
 )
 
 var googleOauthConfig *oauth2.Config
@@ -83,6 +85,24 @@ func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 	name := userInfo["name"].(string)
 	email := userInfo["email"].(string)
 	picture := userInfo["picture"].(string)
+
+	userRepo := model.UserRepository{}
+	isUserExists, err := userRepo.UserExists(email)
+
+	fmt.Println("user", isUserExists)
+	fmt.Println("err", err)
+
+	if err != nil {
+		http.Error(w, "Failed to get user: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if !isUserExists {
+		userRepo.CreateUser(&model.User{
+			Email:   email,
+			Name:    name,
+			Picture: picture,
+		})
+	}
 
 	claims := jwt.MapClaims{
 		"name":    name,

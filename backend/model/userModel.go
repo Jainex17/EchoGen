@@ -36,6 +36,21 @@ func (r *UserRepository) GetUserByEmail(email string) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
+	if user.ID == 0 {
+		return nil, nil
+	}
 
 	return &user, nil
+}
+
+func (r *UserRepository) UserExists(email string) (bool, error) {
+	var exists bool
+	query := `SELECT EXISTS(SELECT 1 FROM users WHERE email = $1)`
+
+	err := config.DB.QueryRow(query, email).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
 }

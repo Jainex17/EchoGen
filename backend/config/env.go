@@ -17,6 +17,8 @@ var (
 	BackendURL         string
 	JwtSecret          []byte
 	CookieSecure       bool
+	VercelBlobSroreId  string
+	VercelStoreUrl     string
 
 	DatabaseURL string
 )
@@ -68,6 +70,11 @@ func LoadEnv() {
 	}
 
 	CookieSecure = os.Getenv("COOKIE_SECURE") == "true"
+
+	VercelBlobSroreId = os.Getenv("BLOB_READ_WRITE_TOKEN")
+	if VercelBlobSroreId == "" {
+		log.Fatal("BLOB_READ_WRITE_TOKEN is not set")
+	}
 
 	fmt.Println("Environment variables loaded successfully")
 }

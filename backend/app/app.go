@@ -1,10 +1,15 @@
 package app
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
+	"os"
+
+	"github.com/google/uuid"
 )
 
 type ttsRequest struct {
@@ -51,16 +56,68 @@ func tts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "audio/mpeg")
-	w.Header().Set("Cache-Control", "no-store")
-
-	mw := io.Writer(w)
-	if _, err := io.Copy(mw, resp.Body); err != nil {
-		http.Error(w, "error copying audio: "+err.Error(), http.StatusInternalServerError)
+	// save audio to blob
+	blobURL, err := SaveAudioToBlob(resp.Body)
+	if err != nil {
+		http.Error(w, "Failed to save audio to blob: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	fmt.Println("Audio saved to audio.mp3")
+	fmt.Println("Audio saved to blob: ", blobURL)
+
+	w.Header().Set("Content-Type", "audio/mpeg")
+	w.Header().Set("Cache-Control", "no-store")
+
+	// send audio to frontend
+	json.NewEncoder(w).Encode(map[string]string{
+		"audio_url": blobURL,
+	})
+}
+
+func SaveAudioToBlob(audio io.Reader) (string, error) {
+
+	if audio == nil {
+		return "", fmt.Errorf("audio is nil")
+	}
+
+	audioFile, err := io.ReadAll(audio)
+	if err != nil {
+		return "", err
+	}
+
+	VercelBlobSroreId := os.Getenv("BLOB_READ_WRITE_TOKEN")
+	fileName := uuid.New().String() + ".mp3"
+	blobURL := "https://blob.vercel-storage.com/put"
+
+	req, err := http.NewRequest("PUT", blobURL, bytes.NewReader(audioFile))
+	if err != nil {
+		log.Fatal(err)
+	}
+	req.Header.Set("Content-Type", "audio/mpeg")
+	req.Header.Set("Authorization", "Bearer "+VercelBlobSroreId)
+	req.Header.Set("x-vercel-blob-filename", fileName)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal("Error reading response body:", err)
+	}
+
+	fmt.Println("Response body:", string(body))
+	var respData struct {
+		URL string `json:"url"`
+	}
+	if err := json.Unmarshal(body, &respData); err != nil {
+		return "", fmt.Errorf("failed to parse blob response: %w", err)
+	}
+	blobURL = respData.URL
+
+	return blobURL, nil
 }
 
 func Run() {

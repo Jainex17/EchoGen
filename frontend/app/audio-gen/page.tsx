@@ -55,19 +55,14 @@ export default function AudioGenPage() {
         throw new Error(`Failed to generate audio: ${errorText}`);
       }
 
-      const audioBlob = await response.blob();
-      
-      if (audioBlob.size === 0) {
-        throw new Error('Generated audio file is empty');
+      const data = await response.json();
+      if (data.success) {
+        const audioUrl = data.audio_url;
+        setGeneratedAudioUrls(prev => [...prev, audioUrl]);
+        setTrack(audioUrl, `${selectedStyle}: ${prompt.slice(0, 40)}...`);
+      } else {
+        throw new Error(data.message);
       }
-      
-      const audioUrl = URL.createObjectURL(audioBlob);
-      
-      setGeneratedAudioUrls(prev => [...prev, audioUrl]);
-      
-      const selectedStyleName = STYLE_OPTIONS.find(s => s.id === selectedStyle)?.name || selectedStyle;
-      setTrack(audioUrl, `${selectedStyleName}: ${prompt.slice(0, 40)}...`);
-      
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       setError(errorMessage);

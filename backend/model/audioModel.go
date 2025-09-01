@@ -1,6 +1,10 @@
 package model
 
-import "time"
+import (
+	"time"
+
+	"echogen/backend/config"
+)
 
 type AudioGeneration struct {
 	ID        int       `db:"id"`
@@ -12,3 +16,12 @@ type AudioGeneration struct {
 }
 
 type AudioGenerationRepository struct{}
+
+func (r *AudioGenerationRepository) CreateAudioGeneration(audioGeneration *AudioGeneration) error {
+	query := `
+		INSERT INTO audio_generations (user_id, prompt, content, audio_url) VALUES ($1, $2, $3, $4)
+	`
+
+	_, err := config.DB.Exec(query, audioGeneration.UserID, audioGeneration.Prompt, audioGeneration.Content, audioGeneration.AudioURL)
+	return err
+}

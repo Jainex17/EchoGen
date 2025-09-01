@@ -18,6 +18,9 @@ EchoGen lets you learn about anything in a way that feels natural to you. Just t
     - [x] generate text content from prompt (use gemini api/openrouter)
     - [x] generate audio file from text content (elevenlabs api)
     - [x] send audio file to frontend
-    - [ ] connect db
+    - [x] connect db
     - [ ] save values in db
+        - [x] user
+        - [ ] audio generation
+        - [x] save audio file to blob storage
     - [x] add auth

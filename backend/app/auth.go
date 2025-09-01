@@ -5,7 +5,6 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -89,9 +88,6 @@ func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 	userRepo := model.UserRepository{}
 	isUserExists, err := userRepo.UserExists(email)
 
-	fmt.Println("user", isUserExists)
-	fmt.Println("err", err)
-
 	if err != nil {
 		http.Error(w, "Failed to get user: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -110,6 +106,7 @@ func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 		"picture": picture,
 		"exp":     time.Now().Add(24 * time.Hour).Unix(),
 	}
+
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	signedToken, err := jwtToken.SignedString(config.JwtSecret)
 	if err != nil {

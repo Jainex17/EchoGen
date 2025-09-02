@@ -9,6 +9,9 @@ import (
 	"net/http"
 	"os"
 
+	"echogen/backend/model"
+
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 )
 
@@ -63,7 +66,30 @@ func tts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("Audio saved to blob: ", blobURL)
+	userRepo := model.UserRepository{}
+	audioGenerationRepo := model.AudioGenerationRepository{}
+
+	email := r.Context().Value(claimsKey).(jwt.MapClaims)["email"].(string)
+
+	user, err := userRepo.GetUserByEmail(email)
+	if err != nil {
+		http.Error(w, "Failed to get user: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	audioGeneration := &model.AudioGeneration{
+		UserID:   user.ID,
+		Prompt:   req.Prompt,
+		Content:  finalContent,
+		AudioURL: blobURL,
+	}
+
+	// save content to database
+	err = audioGenerationRepo.CreateAudioGeneration(audioGeneration)
+	if err != nil {
+		http.Error(w, "Failed to save content to database: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	w.Header().Set("Content-Type", "audio/mpeg")
 	w.Header().Set("Cache-Control", "no-store")
@@ -96,6 +122,7 @@ func SaveAudioToBlob(audio io.Reader) (string, error) {
 	req.Header.Set("Content-Type", "audio/mpeg")
 	req.Header.Set("Authorization", "Bearer "+VercelBlobSroreId)
 	req.Header.Set("x-vercel-blob-filename", fileName)
+	req.Header.Set("x-content-length", fmt.Sprintf("%d", len(audioFile)))
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {

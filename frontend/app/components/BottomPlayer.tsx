@@ -21,7 +21,7 @@ export default function BottomPlayer() {
         <div className="px-6 py-4 flex items-center gap-6">
           <button
             type="button"
-            className="h-12 w-12 inline-flex items-center justify-center rounded-full bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
+            className="h-12 w-12 inline-flex items-center justify-center rounded-full bg-[#FFB703] hover:bg-[#e6a502] text-[#1E2D2F] shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
             onClick={isPlaying ? pause : play}
             disabled={!hasTrack}
             aria-label={isPlaying ? "Pause" : "Play"}
@@ -49,11 +49,11 @@ export default function BottomPlayer() {
           </button>
 
           <div className="min-w-0 flex-1">
-            <p className="truncate text-base font-semibold text-slate-900 mb-2">
+            <p className="truncate text-base font-semibold text-[#1E2D2F] mb-2">
               {title ?? "Playing audio"}
             </p>
             <div className="flex items-center gap-4">
-              <span className="text-sm font-mono text-slate-600 min-w-[40px]">{formatTime(currentTime)}</span>
+              <span className="text-sm font-mono text-[#4F5D56] min-w-[40px]">{formatTime(currentTime)}</span>
               <div className="flex-1 relative">
                 <input
                   type="range"
@@ -66,24 +66,24 @@ export default function BottomPlayer() {
                   disabled={!hasTrack}
                   aria-label="Seek"
                   style={{
-                    background: `linear-gradient(to right, rgb(99 102 241) 0%, rgb(99 102 241) ${duration ? (currentTime / duration) * 100 : 0}%, rgb(226 232 240) ${duration ? (currentTime / duration) * 100 : 0}%, rgb(226 232 240) 100%)`
+                    background: `linear-gradient(to right, #219EBC 0%, #219EBC ${duration ? (currentTime / duration) * 100 : 0}%, rgb(226 232 240) ${duration ? (currentTime / duration) * 100 : 0}%, rgb(226 232 240) 100%)`
                   }}
                 />
               </div>
-              <span className="text-sm font-mono text-slate-600 min-w-[40px]">{formatTime(duration)}</span>
+              <span className="text-sm font-mono text-[#4F5D56] min-w-[40px]">{formatTime(duration)}</span>
             </div>
           </div>
 
           <a
             href={audioSrc ?? undefined}
             download
-            className="inline-flex items-center justify-center rounded-xl border-2 border-slate-300 p-3 hover:bg-indigo-50 hover:border-indigo-400 transition-all duration-200 disabled:opacity-50"
+            className="inline-flex items-center justify-center rounded-xl border-2 border-slate-300 p-3 hover:bg-[#8ECAE6]/10 hover:border-[#8ECAE6] transition-all duration-200 disabled:opacity-50"
             aria-disabled={!hasTrack}
             aria-label="Download audio file"
             title="Download"
           >
             <svg
-              className="w-5 h-5 text-slate-600"
+              className="w-5 h-5 text-[#4F5D56]"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"

@@ -3,18 +3,19 @@
 import { useState, useRef, useEffect } from "react";
 import { useAudio } from "../components/AudioProvider";
 import BottomPlayer from "../components/BottomPlayer";
+import { Headphones, Wrench, Video, BookOpen, Link as LinkIcon, AlertTriangle } from "lucide-react";
 
 const STYLE_OPTIONS = [
-  { id: "podcast", name: "Podcast", icon: "🎧", description: "Conversational and structured" },
-  { id: "tutorial", name: "Tutorial", icon: "🧰", description: "Step-by-step walkthrough" },
-  { id: "youtuber", name: "YouTuber", icon: "🎬", description: "Energetic and engaging" },
+  { id: "podcast", name: "Podcast", icon: Headphones, description: "Conversational and structured" },
+  { id: "tutorial", name: "Tutorial", icon: Wrench, description: "Step-by-step walkthrough" },
+  { id: "youtuber", name: "YouTuber", icon: Video, description: "Energetic and engaging" },
 ] as const;
 
 const EXAMPLE_PROMPTS = [
-  { icon: "🎧", text: "Summarize the history of AI in 3 minutes for a podcast", style: "podcast" },
-  { icon: "📚", text: "Explain React hooks to a beginner with analogies and examples", style: "tutorial" },
-  { icon: "🧰", text: "Teach me Docker basics with practical steps and common pitfalls", style: "tutorial" },
-  { icon: "🔗", text: "Compare REST vs GraphQL for building modern APIs", style: "youtuber" },
+  { icon: Headphones, text: "Summarize the history of AI in 3 minutes for a podcast", style: "podcast" },
+  { icon: BookOpen, text: "Explain React hooks to a beginner with analogies and examples", style: "tutorial" },
+  { icon: Wrench, text: "Teach me Docker basics with practical steps and common pitfalls", style: "tutorial" },
+  { icon: LinkIcon, text: "Compare REST vs GraphQL for building modern APIs", style: "youtuber" },
 ] as const;
 
 export default function AudioGenPage() {
@@ -84,10 +85,10 @@ export default function AudioGenPage() {
   return (
     <main className="mx-auto max-w-4xl px-6 py-12 sm:py-16">
       <div className="text-center mb-12">
-        <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-indigo-600 mb-4">
+        <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#1E2D2F] mb-4">
           Create Audio Content
         </h1>
-        <p className="text-lg sm:text-xl text-slate-600">
+        <p className="text-lg sm:text-xl text-[#4F5D56]">
           Describe any topic and choose your preferred learning style
         </p>
       </div>
@@ -95,14 +96,14 @@ export default function AudioGenPage() {
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Style Selection */}
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-slate-900">Choose your style</h2>
+          <h2 className="text-lg font-semibold text-[#1E2D2F]">Choose your style</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {STYLE_OPTIONS.map((style) => (
               <label
                 key={style.id}
                 className={`cursor-pointer rounded-xl border-2 p-4 transition-all duration-200 ${
                   selectedStyle === style.id
-                    ? 'border-indigo-500 bg-indigo-50'
+                    ? 'border-[#FFB703] bg-[#FFB703]/10'
                     : 'border-slate-200 hover:border-slate-300'
                 }`}
               >
@@ -115,9 +116,11 @@ export default function AudioGenPage() {
                   className="sr-only"
                 />
                 <div className="text-center">
-                  <div className="text-2xl mb-2">{style.icon}</div>
-                  <div className="font-medium text-slate-900">{style.name}</div>
-                  <div className="text-sm text-slate-500 mt-1">{style.description}</div>
+                  <div className="flex justify-center mb-2">
+                    <style.icon className="w-6 h-6 text-[#219EBC]" />
+                  </div>
+                  <div className="font-medium text-[#1E2D2F]">{style.name}</div>
+                  <div className="text-sm text-[#4F5D56] mt-1">{style.description}</div>
                 </div>
               </label>
             ))}
@@ -126,7 +129,7 @@ export default function AudioGenPage() {
 
         {/* Prompt Input */}
         <div className="space-y-3">
-          <label htmlFor="prompt" className="text-lg font-semibold text-slate-900">
+          <label htmlFor="prompt" className="text-lg font-semibold text-[#1E2D2F]">
             What would you like to learn about?
           </label>
           <textarea
@@ -136,18 +139,18 @@ export default function AudioGenPage() {
             onChange={(e) => setPrompt(e.target.value)}
             rows={6}
             placeholder="e.g. Explain the fundamentals of machine learning, including key concepts and real-world applications"
-            className="w-full resize-y rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-base placeholder-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-0 transition-colors"
+            className="w-full resize-y rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-base placeholder-slate-400 focus:border-[#FFB703] focus:outline-none focus:ring-0 transition-colors"
           />
         </div>
 
         {/* Error Display */}
         {error && (
-          <div className="rounded-xl bg-amber-50 border border-amber-200 p-4">
+          <div className="rounded-xl bg-[#FF6B35]/10 border border-[#FF6B35]/30 p-4">
             <div className="flex items-center gap-3">
-              <div className="text-amber-500">⚠️</div>
+              <AlertTriangle className="w-5 h-5 text-[#FF6B35]" />
               <div>
-                <h3 className="font-medium text-amber-900">Generation Error</h3>
-                <p className="text-sm text-amber-700 mt-1">{error}</p>
+                <h3 className="font-medium text-[#1E2D2F]">Generation Error</h3>
+                <p className="text-sm text-[#4F5D56] mt-1">{error}</p>
               </div>
             </div>
           </div>
@@ -158,7 +161,7 @@ export default function AudioGenPage() {
           <button
             type="submit"
             disabled={isLoading || !prompt.trim()}
-            className="inline-flex items-center justify-center gap-3 rounded-xl bg-indigo-600 px-8 py-4 text-base font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl min-w-[200px]"
+            className="inline-flex items-center justify-center gap-3 rounded-xl bg-[#FFB703] px-8 py-4 text-base font-semibold text-[#1E2D2F] hover:bg-[#e6a502] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl min-w-[200px]"
           >
             {isLoading && (
               <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-r-transparent" />
@@ -170,7 +173,7 @@ export default function AudioGenPage() {
 
       {/* Example Prompts */}
       <section className="mt-12">
-        <h2 className="text-lg font-semibold text-slate-900 mb-6 text-center">
+        <h2 className="text-lg font-semibold text-[#1E2D2F] mb-6 text-center">
           Need inspiration? Try these examples
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -191,13 +194,15 @@ export default function AudioGenPage() {
                   }
                 }, 0);
               }}
-              className="group text-left rounded-xl border-2 border-slate-200 p-5 hover:border-indigo-300 hover:shadow-md transition-all duration-200 bg-white"
+              className="group text-left rounded-xl border-2 border-slate-200 p-5 hover:border-[#8ECAE6] hover:shadow-md transition-all duration-200 bg-white"
             >
               <div className="flex items-start gap-4">
-                <div className="text-2xl">{ex.icon}</div>
+                <div className="flex items-center justify-center w-8 h-8">
+                  <ex.icon className="w-6 h-6 text-[#219EBC]" />
+                </div>
                 <div className="flex-1">
-                  <div className="font-medium text-slate-900 mb-2 leading-relaxed">{ex.text}</div>
-                  <div className="inline-flex items-center gap-2 text-sm text-indigo-600">
+                  <div className="font-medium text-[#1E2D2F] mb-2 leading-relaxed">{ex.text}</div>
+                  <div className="inline-flex items-center gap-2 text-sm text-[#FF6B35]">
                     <span className="capitalize">{ex.style} style</span>
                     <span>→</span>
                   </div>

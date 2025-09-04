@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../AuthContext";
+import { ChevronDown, LogOut } from "lucide-react";
 
 export default function Navigation() {
   const { user, login, logout, isLoading } = useAuth();
@@ -21,12 +22,12 @@ export default function Navigation() {
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/90 border-b border-slate-200 shadow-sm">
+    <nav className="fixed top-0 left-0 right-0 z-50">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3">
-            <div className="text-2xl font-bold text-indigo-600">
+            <div className="text-2xl font-bold text-[#FFB703]">
               EchoGen
             </div>
           </Link>
@@ -43,7 +44,7 @@ export default function Navigation() {
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center space-x-3 p-2 rounded-lg hover:bg-indigo-50 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  className="flex items-center space-x-3 p-2 rounded-lg hover:bg-[#8ECAE6]/10 transition-colors focus:outline-none focus:ring-2 focus:ring-[#219EBC] focus:ring-offset-2"
                 >
                   <img
                     src={user.picture || '/default-avatar.png'}
@@ -55,17 +56,12 @@ export default function Navigation() {
                     }}
                   />
                   <div className="hidden sm:block text-left">
-                    <p className="text-sm font-medium text-slate-900">{user.name}</p>
-                    <p className="text-xs text-slate-500">{user.email}</p>
+                    <p className="text-sm font-medium text-[#1E2D2F]">{user.name}</p>
+                    <p className="text-xs text-[#4F5D56]">{user.email}</p>
                   </div>
-                  <svg
-                    className={`w-4 h-4 text-gray-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+                  <ChevronDown
+                    className={`w-4 h-4 text-[#6C757D] transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+                  />
                 </button>
 
                 {isDropdownOpen && (
@@ -82,8 +78,8 @@ export default function Navigation() {
                           }}
                         />
                         <div>
-                          <p className="text-sm font-medium text-slate-900">{user.name}</p>
-                          <p className="text-xs text-slate-500">{user.email}</p>
+                          <p className="text-sm font-medium text-[#1E2D2F]">{user.name}</p>
+                          <p className="text-xs text-[#4F5D56]">{user.email}</p>
                         </div>
                       </div>
                     </div>
@@ -94,11 +90,9 @@ export default function Navigation() {
                           logout();
                           setIsDropdownOpen(false);
                         }}
-                        className="w-full text-left flex items-center px-4 py-2 text-sm text-amber-600 hover:bg-amber-50 transition-colors"
+                        className="w-full text-left flex items-center px-4 py-2 text-sm text-[#FF6B35] hover:bg-[#FF6B35]/10 transition-colors"
                       >
-                        <svg className="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
+                        <LogOut className="w-4 h-4 mr-3" />
                         Sign Out
                       </button>
                     </div>
@@ -109,7 +103,7 @@ export default function Navigation() {
               <div className="flex items-center space-x-4">
                 <button
                   onClick={login}
-                  className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+                  className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#FFB703] px-4 py-2 text-sm font-semibold text-[#1E2D2F] hover:bg-[#e6a502] transition-all duration-200 shadow-lg hover:shadow-xl"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>

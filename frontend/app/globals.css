@@ -1,17 +1,39 @@
 @import "tailwindcss";
 
 :root {
+  /* Primary Text (Dark for readability) */
+  --text-primary: #1E2D2F;
+  --text-primary-alt: #2C2C2C;
+  
+  /* Secondary Text (Subtle) */
+  --text-secondary: #4F5D56;
+  --text-secondary-alt: #6C757D;
+  
+  /* Buttons / Primary Accent */
+  --primary: #FFB703;
+  --primary-dark: #e6a502;
+  --accent: #219EBC;
+  --accent-dark: #1a7f96;
+  
+  /* Secondary Buttons / Links */
+  --secondary: #8ECAE6;
+  --secondary-dark: #7bb8d9;
+  --cta: #FF6B35;
+  --cta-dark: #e55a2b;
+  
+  /* Backgrounds */
   --background: #f8fafc;
-  --foreground: #334155;
-  --primary: #6366f1;
-  --primary-dark: #4f46e5;
-  --secondary: #f59e0b;
-  --secondary-dark: #d97706;
-  --accent: #8b5cf6;
   --surface: #ffffff;
   --surface-alt: #f1f5f9;
+  --overlay-light: rgba(255, 255, 255, 0.85);
+  --overlay-dark: rgba(0, 0, 0, 0.4);
+  
+  /* Borders and muted */
   --border: #e2e8f0;
-  --muted: #64748b;
+  --muted: #6C757D;
+  
+  /* Legacy compatibility */
+  --foreground: var(--text-primary);
 }
 
 @theme inline {
@@ -33,26 +55,26 @@ body {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #6366f1;
+  background: var(--accent);
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 2px 6px rgba(33, 158, 188, 0.3);
   transition: all 0.15s ease;
 }
 
 .slider::-webkit-slider-thumb:hover {
   transform: scale(1.1);
-  background: #4f46e5;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+  background: var(--accent-dark);
+  box-shadow: 0 4px 12px rgba(33, 158, 188, 0.4);
 }
 
 .slider::-moz-range-thumb {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #6366f1;
+  background: var(--accent);
   cursor: pointer;
   border: none;
-  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 2px 6px rgba(33, 158, 188, 0.3);
 }
 
 .slider::-moz-range-track {

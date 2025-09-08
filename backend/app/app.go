@@ -17,18 +17,9 @@ import (
 
 type ttsRequest struct {
 	Prompt  string `json:"prompt"`
+	Style   string `json:"style"`
 	VoiceId string `json:"voice_id"`
 	ModelId string `json:"model_id"`
-}
-
-type GeminiResponse struct {
-	Candidates []struct {
-		Content struct {
-			Parts []struct {
-				Text string `json:"text"`
-			} `json:"parts"`
-		}
-	}
 }
 
 func tts(w http.ResponseWriter, r *http.Request) {
@@ -53,7 +44,7 @@ func tts(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Final Content:\n", finalContent)
 
 	// text to speech
-	resp, err := GenAudio(finalContent, req)
+	resp, err := GenAudio(finalContent, &req)
 	if err != nil {
 		http.Error(w, "Failed to generate audio: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -91,11 +82,12 @@ func tts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "audio/mpeg")
+	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "no-store")
 
 	// send audio to frontend
-	json.NewEncoder(w).Encode(map[string]string{
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"success":   true,
 		"audio_url": blobURL,
 	})
 }

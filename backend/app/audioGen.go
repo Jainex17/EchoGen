@@ -10,7 +10,7 @@ import (
 	"echogen/backend/config"
 )
 
-func GenAudio(finalContent string, req ttsRequest) (*http.Response, error) {
+func GenAudio(finalContent string, req *ttsRequest) (*http.Response, error) {
 	OutputFormat := "mp3_44100_128"
 
 	if req.VoiceId == "" {

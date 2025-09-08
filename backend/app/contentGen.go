@@ -11,20 +11,19 @@ import (
 	"echogen/backend/config"
 )
 
-var SystemPrompt = `You are a podcast narrator. The user will provide a topic, and you must create a podcast-style script about it.  
+type GeminiResponse struct {
+	Candidates []struct {
+		Content struct {
+			Parts []struct {
+				Text string `json:"text"`
+			} `json:"parts"`
+		}
+	}
+}
 
-Rules:  
-- Keep the script concise: about 30–60 seconds of spoken audio (roughly 120–150 words).  
-- Write only the podcast content — do not include meta-text like “I understand” or “Here’s your explanation.”  
-- Use a natural, engaging, conversational tone as if youre speaking to an audience.  
-- If the user provides a podcast/host name, use it naturally in the introduction.  
-- If no name is provided, make up a short, catchy podcast name and use it.  
-- Structure:  
-  - Intro hook (grab attention).  
-  - Main explanation (clear, flowing, engaging).  
-  - Closing note (wrap up neatly).  
-- Avoid robotic or overly formal wording — keep it human and story-like.  
-`
+var PodCastPrompt = `Generate a professional, insightful discussion on the given topic. Keep the tone formal, structured, and clear as if two experts are addressing an audience. Stay under 100 words and under 1 minute of spoken content. Focus on delivering key points with authority and clarity.`
+var YouTuberPrompt = `Generate a casual, energetic explanation on the given topic. Use simple language, friendly tone, and engaging style, like a YouTuber speaking to their audience. Stay under 100 words and under 1 minute of spoken content. Keep it fun, relatable, and easy to follow.`
+var TutorialPrompt = `Generate a step-by-step tutorial on the given topic. Use a clear and instructional tone, breaking the explanation into simple, numbered steps. Stay under 100 words and under 1 minute of spoken content. Focus on practical, easy-to-apply guidance.`
 
 func GenContent(req *ttsRequest) (string, error) {
 
@@ -32,12 +31,24 @@ func GenContent(req *ttsRequest) (string, error) {
 		return "", fmt.Errorf("missing prompt")
 	}
 
+	var systemPrompt string
+	switch req.Style {
+	case "podcast":
+		systemPrompt = PodCastPrompt
+	case "youtuber":
+		systemPrompt = YouTuberPrompt
+	case "tutorial":
+		systemPrompt = TutorialPrompt
+	default:
+		return "", fmt.Errorf("invalid style")
+	}
+
 	payload := map[string]interface{}{
 		"contents": []map[string]interface{}{
 			{
 				"parts": []map[string]string{
 					{
-						"text": SystemPrompt + "\n\nuser: " + req.Prompt,
+						"text": systemPrompt + "\n\nuser: " + req.Prompt,
 					},
 				},
 			},

@@ -85,7 +85,7 @@ export default function AudioGenPage() {
   return (
     <main className="mx-auto max-w-4xl px-6 py-12 sm:py-16">
       <div className="text-center mb-12">
-        <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#1E2D2F] mb-4">
+        <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#1E2D2F] my-4 pt-20">
           Create Audio Content
         </h1>
         <p className="text-lg sm:text-xl text-[#4F5D56]">
@@ -170,48 +170,6 @@ export default function AudioGenPage() {
           </button>
         </div>
       </form>
-
-      {/* Example Prompts */}
-      <section className="mt-12">
-        <h2 className="text-lg font-semibold text-[#1E2D2F] mb-6 text-center">
-          Need inspiration? Try these examples
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {EXAMPLE_PROMPTS.map((ex) => (
-            <button
-              key={ex.text}
-              type="button"
-              onClick={() => {
-                setPrompt(ex.text);
-                setSelectedStyle(ex.style);
-                setTimeout(() => {
-                  const el = textareaRef.current;
-                  if (el) {
-                    el.focus();
-                    try {
-                      el.setSelectionRange(el.value.length, el.value.length);
-                    } catch {}
-                  }
-                }, 0);
-              }}
-              className="group text-left rounded-xl border-2 border-slate-200 p-5 hover:border-[#8ECAE6] hover:shadow-md transition-all duration-200 bg-white"
-            >
-              <div className="flex items-start gap-4">
-                <div className="flex items-center justify-center w-8 h-8">
-                  <ex.icon className="w-6 h-6 text-[#219EBC]" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-medium text-[#1E2D2F] mb-2 leading-relaxed">{ex.text}</div>
-                  <div className="inline-flex items-center gap-2 text-sm text-[#FF6B35]">
-                    <span className="capitalize">{ex.style} style</span>
-                    <span>→</span>
-                  </div>
-                </div>
-              </div>
-            </button>
-          ))}
-        </div>
-      </section>
 
       <BottomPlayer />
     </main>

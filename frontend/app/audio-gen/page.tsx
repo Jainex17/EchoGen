@@ -83,7 +83,9 @@ export default function AudioGenPage() {
   }
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-12 sm:py-16">
+    <main>
+      <div className="mx-auto max-w-4xl px-6 py-12 sm:py-16">
+
       <div className="text-center mb-12">
         <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#1E2D2F] my-4 pt-20">
           Create Audio Content
@@ -172,6 +174,7 @@ export default function AudioGenPage() {
       </form>
 
       <BottomPlayer />
+      </div>
     </main>
   );
 }

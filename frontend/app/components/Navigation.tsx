@@ -44,23 +44,23 @@ export default function Navigation() {
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center space-x-3 p-2 rounded-lg hover:bg-[#8ECAE6]/10 transition-colors focus:outline-none focus:ring-2 focus:ring-[#219EBC] focus:ring-offset-2"
+                  className="flex items-center space-x-3 p-2 rounded-lg hover:bg-[#8ECAE6]/10 transition-colors"
                 >
                   <img
                     src={user.picture || '/default-avatar.png'}
                     alt={user.name}
-                    className="w-8 h-8 rounded-full border-2 border-slate-200"
+                    className="w-8 h-8 rounded-full"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
                       target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=6366f1&color=fff`;
                     }}
                   />
                   <div className="hidden sm:block text-left">
-                    <p className="text-sm font-medium text-[#1E2D2F]">{user.name}</p>
-                    <p className="text-xs text-[#4F5D56]">{user.email}</p>
+                    <p className="text-sm font-medium text-yellow-500">{user.name}</p>
+                    <p className="text-xs text-yellow-500">{user.email}</p>
                   </div>
                   <ChevronDown
-                    className={`w-4 h-4 text-[#6C757D] transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+                    className={`w-4 h-4 text-yellow-500 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
                   />
                 </button>
 
@@ -78,8 +78,8 @@ export default function Navigation() {
                           }}
                         />
                         <div>
-                          <p className="text-sm font-medium text-[#1E2D2F]">{user.name}</p>
-                          <p className="text-xs text-[#4F5D56]">{user.email}</p>
+                          <p className="text-sm font-medium text-yellow-500">{user.name}</p>
+                          <p className="text-xs text-yellow-500">{user.email}</p>
                         </div>
                       </div>
                     </div>
@@ -103,7 +103,7 @@ export default function Navigation() {
               <div className="flex items-center space-x-4">
                 <button
                   onClick={login}
-                  className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#FFB703] px-4 py-2 text-sm font-semibold text-[#1E2D2F] hover:bg-[#e6a502] transition-all duration-200 shadow-lg hover:shadow-xl"
+                  className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-full bg-[#FFB703] px-4 py-2 text-sm font-semibold text-[#1E2D2F] hover:bg-[#e6a502] transition-all duration-200 shadow-lg hover:shadow-xl"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>

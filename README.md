@@ -10,8 +10,8 @@ EchoGen lets you learn about anything in a way that feels natural to you. Just t
     - [x] simple input form(input, options, btn)
     - [x] send request to backend
     - [x] recive audio file and show it to user
-    - [ ] show audio in place of sample prompt
     - [x] google oauth
+    - [x] audio history
     
 - [ ] backend
     - [x] receive request from frontend
@@ -19,8 +19,12 @@ EchoGen lets you learn about anything in a way that feels natural to you. Just t
     - [x] generate audio file from text content (elevenlabs api)
     - [x] send audio file to frontend
     - [x] connect db
-    - [ ] save values in db
+    - [x] save values in db
         - [x] user
-        - [ ] audio generation
+        - [x] audio generation
         - [x] save audio file to blob storage
     - [x] add auth
+    - [x] get audio history from db
+    - [x] add middleware
+    - [x] add postgres
+    - [x] add vercel blob storage

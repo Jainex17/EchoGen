@@ -60,7 +60,7 @@ func tts(w http.ResponseWriter, r *http.Request) {
 	userRepo := model.UserRepository{}
 	audioGenerationRepo := model.AudioGenerationRepository{}
 
-	email := r.Context().Value(claimsKey).(jwt.MapClaims)["email"].(string)
+	email := r.Context().Value(ClaimsKey).(jwt.MapClaims)["email"].(string)
 
 	user, err := userRepo.GetUserByEmail(email)
 	if err != nil {
@@ -139,6 +139,28 @@ func SaveAudioToBlob(audio io.Reader) (string, error) {
 	return blobURL, nil
 }
 
+func getAudioGenerations(w http.ResponseWriter, r *http.Request) {
+
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	email := r.Context().Value(ClaimsKey).(jwt.MapClaims)["email"].(string)
+
+	audioGenerationRepo := model.AudioGenerationRepository{}
+	audioGenerations, err := audioGenerationRepo.GetGenAudioHistory(email)
+	if err != nil {
+		http.Error(w, "Failed to get audio generations: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Cache-Control", "no-store")
+
+	json.NewEncoder(w).Encode(audioGenerations)
+}
+
 func Run() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "Hello, World!")
@@ -150,6 +172,7 @@ func Run() {
 	http.Handle("/auth/logout", AuthMiddleware(http.HandlerFunc(handleLogout)))
 
 	http.Handle("/api/tts", AuthMiddleware(http.HandlerFunc(tts)))
+	http.Handle("/api/audio-generations", AuthMiddleware(http.HandlerFunc(getAudioGenerations)))
 
 	fmt.Println("Starting server on :8080")
 	http.ListenAndServe(":8080", CorsMiddleware(http.DefaultServeMux))

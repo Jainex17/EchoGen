@@ -133,7 +133,7 @@ func handleProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	claims := r.Context().Value(claimsKey).(jwt.MapClaims)
+	claims := r.Context().Value(ClaimsKey).(jwt.MapClaims)
 
 	email := claims["email"].(string)
 	name := claims["name"].(string)

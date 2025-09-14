@@ -12,7 +12,7 @@ import (
 
 type contextKey string
 
-const claimsKey = contextKey("claims")
+const ClaimsKey = contextKey("claims")
 
 func CorsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +50,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), claimsKey, token.Claims)
+		ctx := context.WithValue(r.Context(), ClaimsKey, token.Claims)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 

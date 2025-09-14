@@ -3,19 +3,12 @@
 import { useState, useRef, useEffect } from "react";
 import { useAudio } from "../components/AudioProvider";
 import BottomPlayer from "../components/BottomPlayer";
-import { Headphones, Wrench, Video, BookOpen, Link as LinkIcon, AlertTriangle } from "lucide-react";
+import { Headphones, Wrench, Video, AlertTriangle, Play } from "lucide-react";
 
 const STYLE_OPTIONS = [
   { id: "podcast", name: "Podcast", icon: Headphones, description: "Conversational and structured" },
   { id: "tutorial", name: "Tutorial", icon: Wrench, description: "Step-by-step walkthrough" },
   { id: "youtuber", name: "YouTuber", icon: Video, description: "Energetic and engaging" },
-] as const;
-
-const EXAMPLE_PROMPTS = [
-  { icon: Headphones, text: "Summarize the history of AI in 3 minutes for a podcast", style: "podcast" },
-  { icon: BookOpen, text: "Explain React hooks to a beginner with analogies and examples", style: "tutorial" },
-  { icon: Wrench, text: "Teach me Docker basics with practical steps and common pitfalls", style: "tutorial" },
-  { icon: LinkIcon, text: "Compare REST vs GraphQL for building modern APIs", style: "youtuber" },
 ] as const;
 
 export default function AudioGenPage() {
@@ -26,6 +19,7 @@ export default function AudioGenPage() {
   const [generatedAudioUrls, setGeneratedAudioUrls] = useState<string[]>([]);
   const { setTrack } = useAudio();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [audioGenerations, setAudioGenerations] = useState<any[]>([]);
 
   useEffect(() => {
     return () => {
@@ -60,7 +54,7 @@ export default function AudioGenPage() {
       if (data.success) {
         const audioUrl = data.audio_url;
         setGeneratedAudioUrls(prev => [...prev, audioUrl]);
-        setTrack(audioUrl, `${selectedStyle}: ${prompt.slice(0, 40)}...`);
+        setTrack(audioUrl, `${selectedStyle}: ${prompt.slice(0, 80)}...`);
       } else {
         throw new Error(data.message);
       }
@@ -77,10 +71,25 @@ export default function AudioGenPage() {
     setIsLoading(true);
     try {
       await generateAudio();
+      getAudioGenerations();
     } finally {
       setIsLoading(false);
     }
   }
+
+  async function getAudioGenerations() {
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8080';
+    const response = await fetch(`${backendUrl}/api/audio-generations`, {
+      method: 'GET',
+      credentials: 'include',
+    });
+    const data = await response.json();
+    setAudioGenerations(data);
+  }
+
+  useEffect(() => {
+    getAudioGenerations();
+  }, []);
 
   return (
     <main>
@@ -172,6 +181,38 @@ export default function AudioGenPage() {
           </button>
         </div>
       </form>
+
+      {audioGenerations.length > 0 && (
+        <div className="mt-16">
+          <h2 className="text-2xl font-bold tracking-tight text-[#1E2D2F] mb-6">
+            Your Audio History
+          </h2>
+          <div className="space-y-4">
+            {audioGenerations.map((generation) => (
+              <div key={generation.AudioURL} className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => setTrack(generation.AudioURL, `${generation.Prompt.length > 90 ? generation.Prompt.slice(0, 90) + '...' : generation.Prompt}`)}
+                    className="flex items-center justify-center rounded-full bg-[#FFB703] text-[#1E2D2F] h-10 w-10 hover:bg-[#e6a502] transition-colors"
+                  >
+                    <Play className="w-3 h-3" fill="currentColor" />
+                  </button>
+                  <div>
+                    <p className="font-medium text-[#1E2D2F]">{`${generation.Prompt.length > 90 ? generation.Prompt.slice(0, 90) + '...' : generation.Prompt}`}</p>
+                  </div>
+                </div>
+                <a
+                  href={generation.AudioURL}
+                  download
+                  className="text-sm font-medium text-[#219EBC] hover:underline"
+                >
+                  Download
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <BottomPlayer />
       </div>

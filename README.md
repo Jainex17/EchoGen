@@ -4,7 +4,7 @@
 
 EchoGen lets you learn about anything in a way that feels natural to you. Just type in a topic, pick how you want it explained—like a podcast, YouTuber, or step-by-step tutorial—and EchoGen will turn it into an audio you can listen to or download.
 
----
+https://github.com/user-attachments/assets/3c9f4704-45e8-4650-8ed0-3a2c31689187
 
 ## ✅ v0.1 DONE  
 
